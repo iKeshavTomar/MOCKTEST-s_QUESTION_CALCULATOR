@@ -6,34 +6,30 @@
     <title>Correct & Incorrect Calculator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1s ease-in-out;
         }
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             padding: 20px;
             max-width: 400px;
             width: 100%;
             text-align: center;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
         }
         h1 {
             color: #333;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+            font-size: 24px;
         }
         button {
             background-color: #007BFF;
@@ -43,10 +39,19 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         button:hover {
             background-color: #0056b3;
+            transform: scale(1.1);
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
         }
         .result {
             margin-top: 20px;
@@ -54,54 +59,83 @@
             background-color: #f9f9f9;
             border: 1px solid #ccc;
             border-radius: 5px;
+            transition: opacity 0.5s ease-in-out;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Correct & Incorrect Calculator</h1>
-        <form id="calculator-form">
-            <input type="number" id="total-marks" placeholder="Enter total marks obtained" required>
-            <input type="number" id="total-questions" placeholder="Enter total questions attempted" required>
-            <input type="number" id="marks-correct" placeholder="Marks per correct answer" required>
-            <input type="number" id="marks-incorrect" placeholder="Negative marks per incorrect answer" required>
-            <button type="button" onclick="calculate()">Calculate</button>
-        </form>
-        <div class="result" id="result" style="display: none;"></div>
+<body id="body">
+    <div class="container" id="main-container">
+        <h1>Select Your Test</h1>
+        <button onclick="selectTest('maths')">MATHS</button>
+        <button onclick="selectTest('gat')">GAT</button>
     </div>
 
     <script>
-        function calculate() {
+        const body = document.getElementById('body');
+        const mainContainer = document.getElementById('main-container');
+
+        function selectTest(test) {
+            mainContainer.style.transform = "scale(0.9)";
+            mainContainer.style.opacity = "0";
+            setTimeout(() => {
+                if (test === 'maths') {
+                    body.style.backgroundImage = "url('maths-background.jpg')";
+                    renderCalculator(2.5, -0.83, 'Maths');
+                } else if (test === 'gat') {
+                    body.style.backgroundImage = "url('gat-background.jpg')";
+                    renderCalculator(4, -1.33, 'GAT');
+                }
+                mainContainer.style.transform = "scale(1)";
+                mainContainer.style.opacity = "1";
+            }, 500);
+        }
+
+        function renderCalculator(correctMark, incorrectMark, testName) {
+            mainContainer.innerHTML = `
+                <h1>${testName} Calculator</h1>
+                <form id="calculator-form">
+                    <input type="number" id="total-marks" placeholder="Enter total marks obtained" required>
+                    <input type="number" id="total-questions" placeholder="Enter total questions attempted" required>
+                    <button type="button" onclick="calculate(${correctMark}, ${incorrectMark})">Calculate</button>
+                </form>
+                <div class="result" id="result" style="display: none;"></div>
+            `;
+        }
+
+        function calculate(correctMark, incorrectMark) {
             const totalMarks = parseFloat(document.getElementById('total-marks').value);
             const totalQuestions = parseInt(document.getElementById('total-questions').value);
-            const marksCorrect = parseFloat(document.getElementById('marks-correct').value);
-            const marksIncorrect = parseFloat(document.getElementById('marks-incorrect').value);
 
-            if (isNaN(totalMarks) || isNaN(totalQuestions) || isNaN(marksCorrect) || isNaN(marksIncorrect)) {
+            if (isNaN(totalMarks) || isNaN(totalQuestions)) {
                 alert('Please fill in all fields correctly!');
                 return;
             }
 
-            // Solve for correct and incorrect questions
-            const correctQuestions = (totalMarks + (totalQuestions * marksIncorrect)) / (marksCorrect + marksIncorrect);
+            const correctQuestions = (totalMarks + (totalQuestions * incorrectMark)) / (correctMark + incorrectMark);
             const incorrectQuestions = totalQuestions - correctQuestions;
 
-            // Check for valid results
             if (correctQuestions < 0 || incorrectQuestions < 0 || correctQuestions > totalQuestions) {
                 document.getElementById('result').innerHTML = '<p style="color: red;">Invalid input or result. Please check your values!</p>';
                 document.getElementById('result').style.display = 'block';
                 return;
             }
 
-            // Display results
             document.getElementById('result').innerHTML = `
                 <h3>Results</h3>
                 <p>Correct Questions: <strong>${correctQuestions.toFixed(0)}</strong></p>
                 <p>Incorrect Questions: <strong>${incorrectQuestions.toFixed(0)}</strong></p>
-                <p>Negative Marks: <strong>${(incorrectQuestions * marksIncorrect).toFixed(2)}</strong></p>
+                <p>Negative Marks: <strong>${(incorrectQuestions * incorrectMark).toFixed(2)}</strong></p>
             `;
-            document.getElementById('result').style.display = 'block';
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.opacity = "0";
+            resultDiv.style.display = "block";
+            setTimeout(() => {
+                resultDiv.style.opacity = "1";
+            }, 100);
         }
+
+        // Set initial background image
+        body.style.backgroundImage = "url('select-test-background.jpg')";
     </script>
 </body>
 </html>
