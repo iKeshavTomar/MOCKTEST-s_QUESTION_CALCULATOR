@@ -116,8 +116,8 @@
                 return;
             }
 
-            const correctQuestions = (totalMarks + (totalQuestions * incorrectMark)) / (correctMark + incorrectMark);
-            const incorrectQuestions = totalQuestions - correctQuestions;
+            const incorrectQuestions = (correctMark * totalQuestions - totalMarks) / (correctMark - incorrectMark);
+            const correctQuestions = totalQuestions - incorrectQuestions;
 
             if (correctQuestions < 0 || incorrectQuestions < 0 || correctQuestions > totalQuestions) {
                 document.getElementById('result').innerHTML = '<p style="color: red;">Invalid input or result. Please check your values!</p>';
@@ -127,9 +127,9 @@
 
             document.getElementById('result').innerHTML = `
                 <h3>Results</h3>
-                <p>Correct Questions: <strong>${correctQuestions.toFixed(0)}</strong></p>
-                <p>Incorrect Questions: <strong>${incorrectQuestions.toFixed(0)}</strong></p>
-                <p>Negative Marks: <strong>${(incorrectQuestions * incorrectMark).toFixed(2)}</strong></p>
+                <p>Correct Questions: <strong>${Math.round(correctQuestions)}</strong></p>
+                <p>Incorrect Questions: <strong>${Math.round(incorrectQuestions)}</strong></p>
+                <p>Negative Marks: <strong>${(Math.round(incorrectQuestions) * Math.abs(incorrectMark)).toFixed(2)}</strong></p>
             `;
             const resultDiv = document.getElementById('result');
             resultDiv.style.opacity = "0";
