@@ -96,7 +96,7 @@
         }
 
         function renderCalculator(correctMark, incorrectMark, testName) {
-            mainContainer.innerHTML = `
+            mainContainer.innerHTML = ` 
                 <h1>${testName} Calculator</h1>
                 <form id="calculator-form">
                     <input type="number" id="total-marks" placeholder="Enter total marks obtained" required>
@@ -118,6 +118,7 @@
 
             const incorrectQuestions = (correctMark * totalQuestions - totalMarks) / (correctMark - incorrectMark);
             const correctQuestions = totalQuestions - incorrectQuestions;
+            const accuracy = (correctQuestions / totalQuestions) * 100;
 
             if (correctQuestions < 0 || incorrectQuestions < 0 || correctQuestions > totalQuestions) {
                 document.getElementById('result').innerHTML = '<p style="color: red;">Invalid input or result. Please check your values!</p>';
@@ -130,6 +131,7 @@
                 <p>Correct Questions: <strong>${Math.round(correctQuestions)}</strong></p>
                 <p>Incorrect Questions: <strong>${Math.round(incorrectQuestions)}</strong></p>
                 <p>Negative Marks: <strong>${(Math.round(incorrectQuestions) * Math.abs(incorrectMark)).toFixed(2)}</strong></p>
+                <p>Accuracy: <strong>${accuracy.toFixed(2)}%</strong></p>
             `;
             const resultDiv = document.getElementById('result');
             resultDiv.style.opacity = "0";
