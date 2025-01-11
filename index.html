@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUMBER's NEXUS</title>
+    <title>Correct & Incorrect Calculator</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -111,8 +111,8 @@
             const totalMarks = parseFloat(document.getElementById('total-marks').value);
             const totalQuestions = parseInt(document.getElementById('total-questions').value);
 
-            if (isNaN(totalMarks) || isNaN(totalQuestions)) {
-                alert('Please fill in all fields correctly!');
+            if (isNaN(totalMarks) || isNaN(totalQuestions) || totalMarks < 0 || totalQuestions <= 0) {
+                alert('Please enter valid positive numbers!');
                 return;
             }
 
